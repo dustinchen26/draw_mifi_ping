@@ -1,0 +1,124 @@
+<!-- 
+  Copyright © [2023] [Dustin_Chen]. All rights reserved.
+  Author: Dustin Chen
+  Email:  Dustin_Chen@compal.com
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Time Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; 
+            padding: 20px; /* 添加內邊距以防止內容緊貼邊緣 */
+            text-align: left; /* 確保文本左對齊 */
+        }
+        canvas {
+            max-width: 100%;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            box-sizing: border-box; /* 包括內邊距和邊框 */
+        }
+        .instruction {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .code {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ping Time Graph</h1>
+    <div class="instruction">
+        Input below command in Saviah CN: 
+        <code class="code">ping 10.205.164.22 -c 21600 | while read pong; do echo "$(date -u +"%Y-%m-%d %H:%M:%S"): $pong"; done</code>
+    </div>
+    <textarea id="pingOutput" placeholder="Paste your ping output here..."></textarea>
+    <button onclick="generateGraph()">Generate Graph</button>
+    <canvas id="pingChart" width="400" height="200"></canvas>
+    <h3>Statistics</h3>
+    <p id="stats"></p>
+
+    <script>
+        let pingChart;
+
+        function generateGraph() {
+            const output = document.getElementById("pingOutput").value.trim();
+            const lines = output.split('\n');
+            const pingData = [];
+
+            lines.forEach(line => {
+                const timeMatch = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
+                const valueMatch = line.match(/time=([\d.]+) ms/);
+                if (timeMatch && valueMatch) {
+                    pingData.push({
+                        time: timeMatch[1],
+                        value: parseFloat(valueMatch[1])
+                    });
+                }
+            });
+
+            if (pingData.length === 0) {
+                alert("No valid ping data found.");
+                return;
+            }
+
+            const labels = pingData.map(data => data.time);
+            const values = pingData.map(data => data.value);
+
+            const max = Math.max(...values);
+            const min = Math.min(...values);
+            const avg = (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2);
+
+            document.getElementById("stats").innerText = `Max: ${max} ms, Min: ${min} ms, Avg: ${avg} ms`;
+
+            // Clear previous chart if it exists
+            if (pingChart) {
+                pingChart.destroy();
+            }
+
+            const ctx = document.getElementById('pingChart').getContext('2d');
+            pingChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ping Time (ms)',
+                        data: values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Ping Time (ms)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
