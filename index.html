@@ -13,11 +13,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+	        font-family: Roboto, sans-serif;  /* font-family: Arial, sans-serif;*/
+	        font-size: 14px;
             margin: 0; 
             padding: 20px; /* 添加內邊距以防止內容緊貼邊緣 */
             text-align: left; /* 確保文本左對齊 */
         }
+	
         canvas {
             max-width: 100%;
         }
@@ -37,7 +39,18 @@
     </style>
 </head>
 <body>
-    <h1>Ping Time Graph</h1>
+    <h2>Ping Time Graph</h2>
+  <style>
+    .author-info {
+      display: inline;
+      margin-right: 10px;
+    }
+  </style>
+  <p class="author-info">Author: Dustin_Chen</p>
+  <p class="author-info">Email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a></p>
+  <p class="author-info">or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
+<br><br>
+
     <div class="instruction">
         Input below command in Saviah CN: 
         <code class="code">ping 10.205.164.22 -c 21600 | while read pong; do echo "$(date -u +"%Y-%m-%d %H:%M:%S"): $pong"; done</code>
