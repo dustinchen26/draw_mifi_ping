@@ -20,11 +20,13 @@
             text-align: left; /* 確保文本左對齊 */
         }
 	
-        canvas {
-            max-width: 100%;
+        #chartContainer {
+            width: 1000px;   /* 固定寬度 */
+            height: 450px;  /* 固定高度 */
+            overflow: hidden; /* 隱藏超出部分 */
         }
         textarea {
-            width: 100%;
+            width: 40%;
             height: 200px;
             box-sizing: border-box; /* 包括內邊距和邊框 */
         }
@@ -56,8 +58,11 @@
         <code class="code">ping 10.205.164.22 -c 21600 | while read pong; do echo "$(date -u +"%Y-%m-%d %H:%M:%S"): $pong"; done</code>
     </div>
     <textarea id="pingOutput" placeholder="Paste your ping output here..."></textarea>
-    <button onclick="generateGraph()">Generate Graph</button>
+    <br>
+	<button onclick="generateGraph()">Generate Graph</button>
+    <div id="chartContainer">
     <canvas id="pingChart" width="400" height="200"></canvas>
+</div>
     <h3>Statistics</h3>
     <p id="stats"></p>
 
